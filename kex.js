@@ -1,6 +1,6 @@
 
 
-  function matchIngredient(i, xhr, word){ 
+  function matchIngredient(i, xhr, word, pre){ 
     var split = word.split(" ");
     split.push("");
     xhr.open('GET', 'http://lcafdb.org/api/ingredients?search=' + split[0], true);  
@@ -8,16 +8,16 @@
     if (xhr.readyState === 4 && xhr.status === 200){
       var response = JSON.parse(xhr.responseText); 
       if (split[1] == ""){
-        getCarbonEmission(i, xhr, response.ingredients["0"].id, word);
+        getCarbonEmission(i, xhr, response.ingredients["0"].id, pre, word);
       }
       else {
         for (var j = 0; j < response.ingredients.length; j ++){
           if(response.ingredients[""+j+""].name == word){
-            getCarbonEmission(i, xhr, response.ingredients[""+j+""].id, word);
+            getCarbonEmission(i, xhr, response.ingredients[""+j+""].id, pre, word);
           }
           else {
-            
-            matchIngredient(i, xhr, split[1]);
+            pre = split[0] + " ";
+            matchIngredient(i, xhr, split[1], pre);
           }
         }
       }
@@ -29,7 +29,7 @@
     }
     xhr.send();
   }
-  function getCarbonEmission(i, xhr, id, word){
+  function getCarbonEmission(i, xhr, id, pre, word){
     xhr.open('GET', 'http://lcafdb.org/api/func/calculate?ingredient='+id+'&amount=1000&unit=gram', true);
     xhr.onreadystatechange = function(){
     if (xhr.readyState == 4){
@@ -37,10 +37,10 @@
   
       var carbon = Math.log2(response.carbon.average/1000)*4+13
       if (carbon < 8){
-        var final =  "<span style ='font-size:" + (8).toString() + "pt'>" + word + "</span>"; //Funkar även med pt istället för %
+        var final =  "<span style ='font-size:" + (8).toString() + "pt'>" + pre + word + "</span>"; //Funkar även med pt istället för %
       }
       else{
-        var final =  "<span style ='font-size:" + (carbon).toString() + "pt'>" + word + "</span>"; //Funkar även med pt istället för %        
+        var final =  "<span style ='font-size:" + (carbon).toString() + "pt'>" + pre + word + "</span>"; //Funkar även med pt istället för %        
       }
       writeItOut(final, i);
       }
@@ -58,7 +58,8 @@
         //all[i].innerHTML = "";
         xhrArr[i] = createXMLHTTPrequest();
         if (xhrArr[i].readyState==0 || xhrArr[i].readyState==4){
-          matchIngredient(i, xhrArr[i], ingredient);
+          var pre = "";
+          matchIngredient(i, xhrArr[i], ingredient, pre);
         }
       }    
     }
