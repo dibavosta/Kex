@@ -36,6 +36,7 @@
       var response = JSON.parse(xhr.responseText); 
   
       var carbon = Math.log2(response.carbon.average/1000)*4+13
+      console.log(word, carbon)
       if (carbon < 8){
         var final =  "<span style ='font-size:" + (8).toString() + "pt'>" + pre + word + "</span>"; //Funkar även med pt istället för %
       }
@@ -49,9 +50,11 @@
   }
 
   var xhrArr = new Array();
-  function setUp(){
 
+
+  function setUp(){
     var all = document.getElementsByClassName("ingredient");
+    
     for (var i=0; i < all.length; i++) {
       if (all[i].innerHTML != ""){
         var ingredient = all[i].textContent;
@@ -86,4 +89,5 @@
     }
   }
 
+  setUp();
 
