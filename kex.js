@@ -35,7 +35,7 @@
     if (xhr.readyState == 4){
       var response = JSON.parse(xhr.responseText); 
   
-      var carbon = Math.log2(response.carbon.average/1000)*4+13
+      var carbon = (response.carbon.average/1200)*4+10
       console.log(word, carbon)
       if (carbon < 8){
         var final =  "<span style ='font-size:" + (8).toString() + "pt'>" + pre + word + "</span>"; //Funkar även med pt istället för %
